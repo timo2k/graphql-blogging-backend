@@ -1,3 +1,5 @@
+import getUserId from '../utils/getUserId';
+
 const Subscription = {
   comment: {
     subscribe(_parent, { postId }, { prisma }, info) {
@@ -28,6 +30,25 @@ const Subscription = {
           info
         );
       }
+    }
+  },
+
+  myPost: {
+    subscribe(_parent, _args, { prisma, request }, info) {
+      const userId = getUserId(request);
+
+      return prisma.subscription.post(
+        {
+          where: {
+            node: {
+              author: {
+                id: userId
+              }
+            }
+          }
+        },
+        info
+      );
     }
   }
 };
